@@ -46,9 +46,8 @@ structured-output-function-calling/
 ├── .gitignore
 └── examples/
     ├── calculator.png
-    ├── current_time.png
+    ├── time.png
     ├── structured_output.png
-    ├── validation_error.png
     └── chat.png
 ```
 
