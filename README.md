@@ -283,59 +283,6 @@ Normal Conversation
 
 ---
 
-# ▶️ Installation
-
-Clone the repository
-
-```bash
-git clone https://github.com/yourusername/structured-output-function-calling.git
-```
-
-Move into the project
-
-```bash
-cd structured-output-function-calling
-```
-
-Create a virtual environment
-
-```bash
-python -m venv venv
-```
-
-Activate it
-
-Windows
-
-```bash
-venv\Scripts\activate
-```
-
-Linux / macOS
-
-```bash
-source venv/bin/activate
-```
-
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Create a `.env` file
-
-```env
-GROQ_API_KEY=YOUR_API_KEY
-```
-
-Run the project
-
-```bash
-python app.py
-```
-
----
 
 
 # 💬 Example Conversation
