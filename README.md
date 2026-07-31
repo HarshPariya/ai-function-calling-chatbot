@@ -375,11 +375,6 @@ I am an AI Assistant built using Python and the Groq API.
 
 ---
 
-## Validation Error
-
-![Validation Error](examples/validation_error.png)
-
----
 
 ## Chat
 
