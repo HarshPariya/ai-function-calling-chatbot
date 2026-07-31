@@ -382,7 +382,7 @@ I am an AI Assistant built using Python and the Groq API.
 
 ---
 
-# 📌 Assignment Requirements Covered
+# 📌 Task Requirements Covered
 
 - ✅ Native Function Calling
 - ✅ Two Callable Python Tools
@@ -396,17 +396,5 @@ I am an AI Assistant built using Python and the Groq API.
 
 ---
 
-# 🚀 Future Improvements
 
-- Weather API Integration
-- Currency Converter Tool
-- PDF Information Extraction
-- Retrieval-Augmented Generation (RAG)
-- Streamlit Web Interface
-- Voice Assistant
-- Docker Support
-- Unit Testing
-- Logging & Monitoring
-
----
 
