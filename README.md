@@ -323,7 +323,7 @@ Then display them like this:
 
 ---
 
-# 📌 Assignment Requirements Covered
+# 📌 Task Requirements Covered
 
 - ✔ Native Function Calling
 - ✔ Two Python Tools
