@@ -10,11 +10,13 @@ from schemas import Person
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
+)
 
-# ---------------------------------------------------------
+# ==========================================================
 # Tool Schemas
-# ---------------------------------------------------------
+# ==========================================================
 
 calculator_tool = {
     "type": "function",
@@ -39,7 +41,8 @@ calculator_tool = {
                         "subtract",
                         "multiply",
                         "divide"
-                    ]
+                    ],
+                    "description": "Mathematical operation"
                 }
             },
             "required": [
@@ -63,12 +66,89 @@ time_tool = {
     }
 }
 
-# ---------------------------------------------------------
-# Chat
-# ---------------------------------------------------------
+# ==========================================================
+# Helper Function
+# ==========================================================
+
+def extract_person_info(user_input: str):
+
+    system_prompt = """
+You are an information extraction assistant.
+
+Extract the following information.
+
+Return ONLY valid JSON.
+
+{
+    "name":"",
+    "age":0,
+    "email":"",
+    "skills":[]
+}
+"""
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        response_format={
+            "type": "json_object"
+        },
+        messages=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": user_input
+            }
+        ]
+    )
+
+    json_output = response.choices[0].message.content
+
+    print("\nGenerated JSON")
+    print("-" * 50)
+    print(json_output)
+
+    print("\nRunning Pydantic Validation...")
+    print("-" * 50)
+
+    try:
+
+        person = Person.model_validate_json(json_output)
+
+        print("Validation Successful!\n")
+
+        print("Parsed Object")
+        print("-" * 50)
+
+        print(f"Name   : {person.name}")
+        print(f"Age    : {person.age}")
+        print(f"Email  : {person.email}")
+        print(f"Skills : {', '.join(person.skills)}")
+
+    except ValidationError as e:
+
+        print("Validation Failed!\n")
+
+        print("Validation Errors:")
+        print("-" * 50)
+
+        for error in e.errors():
+
+            field = ".".join(map(str, error["loc"]))
+
+            print(f"Field : {field}")
+            print(f"Error : {error['msg']}")
+            print()
+
+
+# ==========================================================
+# Main Chat Loop
+# ==========================================================
 
 print("=" * 60)
-print("AI Assistant")
+print("🤖 AI Assistant")
 print("=" * 60)
 
 while True:
@@ -76,24 +156,22 @@ while True:
     user_input = input("\nYou : ")
 
     if user_input.lower() in ["exit", "quit"]:
-        print("\nGoodbye!")
+        print("\nGoodbye 👋")
         break
 
-    # ---------------------------------------------------------
-    # STEP 1 : Detect Intent
-    # ---------------------------------------------------------
+    # ======================================================
+    # Intent Detection
+    # ======================================================
 
     intent_prompt = f"""
 You are an intent classifier.
 
-Classify the user's request into ONLY one of these categories.
+Return ONLY one of these four words.
 
 calculator
 time
 extract
 chat
-
-Return ONLY one word.
 
 User:
 
@@ -114,68 +192,19 @@ User:
 
     print(f"\nDetected Intent : {intent}")
 
-    # ---------------------------------------------------------
-    # STEP 2 : Structured Output
-    # ---------------------------------------------------------
+    # ======================================================
+    # Structured Output
+    # ======================================================
 
     if intent == "extract":
 
-        extraction_prompt = """
-Extract the following fields.
-
-Return ONLY valid JSON.
-
-{
-"name":"",
-"age":0,
-"email":"",
-"skills":[]
-}
-"""
-
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            response_format={
-                "type": "json_object"
-            },
-            messages=[
-                {
-                    "role": "system",
-                    "content": extraction_prompt
-                },
-                {
-                    "role": "user",
-                    "content": user_input
-                }
-            ]
-        )
-
-        json_output = response.choices[0].message.content
-
-        print("\nGenerated JSON\n")
-        print(json_output)
-
-        print("\nValidation\n")
-
-        try:
-
-            person = Person.model_validate_json(json_output)
-
-            print("Validation Successful!\n")
-
-            print(person)
-
-        except ValidationError as e:
-
-            print("Validation Failed!\n")
-
-            print(e)
+        extract_person_info(user_input)
 
         continue
 
-    # ---------------------------------------------------------
-    # STEP 3 : Tool Calling
-    # ---------------------------------------------------------
+    # ======================================================
+    # Function Calling
+    # ======================================================
 
     if intent in ["calculator", "time"]:
 
@@ -228,13 +257,28 @@ Return ONLY valid JSON.
 
         continue
 
-    # ---------------------------------------------------------
-    # STEP 4 : Normal Chat
-    # ---------------------------------------------------------
+    # ======================================================
+    # Normal Chat
+    # ======================================================
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
+            {
+                "role": "system",
+                "content": """
+You are an AI Assistant built using Python and the Groq API.
+
+You can:
+- Perform calculations using Python tools.
+- Tell the current time.
+- Extract structured information from text.
+- Answer general questions.
+
+Never introduce yourself as Llama.
+Always introduce yourself as an AI Assistant.
+"""
+            },
             {
                 "role": "user",
                 "content": user_input

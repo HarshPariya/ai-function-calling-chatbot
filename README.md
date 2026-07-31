@@ -1,37 +1,32 @@
-# 🤖 Structured Output & Function Calling Chatbot
+# 🤖 AI Function Calling Chatbot
 
-A Python-based AI chatbot built using the **Groq API** that demonstrates **Native Function Calling**, **Structured JSON Output**, **Pydantic Validation**, and **Intent Detection**.
+An intelligent AI chatbot built with **Python**, **Groq API**, and **Pydantic** that demonstrates **Native Function Calling**, **Intent Detection**, **Structured Output**, and **Custom Data Validation**.
 
-This project was developed as part of an AI Engineering internship assignment to showcase how Large Language Models (LLMs) can interact with external Python functions and generate validated structured data.
+This project was developed as part of an AI Engineering internship assignment to showcase how Large Language Models (LLMs) can intelligently choose Python tools, extract structured information, and validate AI-generated outputs before using them.
 
 ---
 
 # 🚀 Features
 
-✅ Native Function Calling using Groq API
-
-✅ Automatic Intent Detection
-
-✅ Calculator Tool
-
-✅ Current Time Tool
-
-✅ Structured JSON Extraction
-
-✅ Pydantic Schema Validation
-
-✅ Interactive Command Line Chatbot
+- ✅ Native Function Calling using Groq API
+- ✅ Automatic Intent Detection
+- ✅ Calculator Tool
+- ✅ Current Time Tool
+- ✅ Structured JSON Extraction
+- ✅ Custom Pydantic Validation
+- ✅ Interactive Command-Line Chatbot
+- ✅ Detailed Validation Error Reporting
 
 ---
 
-# 🛠 Tech Stack
+# 🛠️ Tech Stack
 
 | Technology | Purpose |
 |------------|---------|
 | Python | Programming Language |
 | Groq API | LLM & Native Function Calling |
 | Llama 3.3 70B | Language Model |
-| Pydantic | JSON Validation |
+| Pydantic v2 | Schema Validation |
 | python-dotenv | Environment Variables |
 | Email Validator | Email Validation |
 
@@ -39,113 +34,118 @@ This project was developed as part of an AI Engineering internship assignment to
 
 # 📂 Project Structure
 
-```
+```text
 structured-output-function-calling/
 │
-├── app.py                 # Main chatbot
-├── tools.py               # Calculator & Time tools
-├── schemas.py             # Pydantic schemas
+├── app.py
+├── tools.py
+├── schemas.py
 ├── requirements.txt
 ├── README.md
 ├── .env
 ├── .gitignore
 └── examples/
+    ├── calculator.png
+    ├── current_time.png
+    ├── structured_output.png
+    ├── validation_error.png
+    └── chat.png
 ```
 
 ---
 
-# ⚙️ How It Works
+# 🧠 Application Workflow
 
-The chatbot first detects the user's intent.
-
+```text
+                     User
+                       │
+                       ▼
+             Intent Detection (LLM)
+                       │
+      ┌────────────────┼─────────────────┐
+      ▼                ▼                 ▼
+ Calculator        Current Time     Information
+      │                │            Extraction
+      ▼                ▼                 │
+ Python Tool      Python Tool            ▼
+                                  Structured JSON
+                                          │
+                                          ▼
+                              Pydantic Validation
+                                          │
+                                          ▼
+                                  Final Response
 ```
-                    User
-                      │
-                      ▼
-             Intent Detection
-                      │
-      ┌───────────────┼────────────────┐
-      ▼               ▼                ▼
- Calculator        Current Time      Information
-      │               │              Extraction
-      ▼               ▼                │
- Python Tool      Python Tool          ▼
-                                      JSON
-                                       │
-                                       ▼
-                             Pydantic Validation
-```
 
-Depending on the detected intent, the chatbot either:
-
-- Calls a Python calculator function
-- Calls a Python function to fetch the current time
-- Extracts structured JSON and validates it
-- Responds like a normal AI assistant
+The chatbot first determines the user's intent and then automatically routes the request to the appropriate workflow.
 
 ---
 
-# 🔧 Tool 1 — Calculator
+# ⚙️ Tool 1 — Calculator
 
-The chatbot automatically detects mathematical questions.
+Performs mathematical calculations using a native Python function.
 
-### Example
-
-**Input**
-
-```
-Calculate 250 multiplied by 40
-```
-
-**Output**
-
-```
-Assistant : 10000
-```
-
-Supported operations
+### Supported Operations
 
 - Addition
 - Subtraction
 - Multiplication
 - Division
 
+### Example
+
+**Input**
+
+```text
+Calculate 500 multiplied by 25
+```
+
+**Output**
+
+```text
+Detected Intent : calculator
+
+Assistant : 12500
+```
+
 ---
 
 # 🕒 Tool 2 — Current Time
 
-The chatbot automatically detects time-related questions.
+Returns the current local system time.
 
 ### Example
 
 **Input**
 
-```
+```text
 What is the current time?
 ```
 
 **Output**
 
-```
-Assistant : 02:10 PM
+```text
+Detected Intent : time
+
+Assistant : 02:15 PM
 ```
 
 ---
 
 # 📄 Structured Output
 
-The chatbot can extract structured information from natural language.
+The chatbot automatically extracts structured information from natural language.
 
 ### Input
 
-```
+```text
 My name is Harsh Pariya.
 I am 20 years old.
 My email is harsh@gmail.com.
 I know Python, Java, SQL and Machine Learning.
 ```
 
-### Output
+### Generated JSON
 
 ```json
 {
@@ -163,41 +163,83 @@ I know Python, Java, SQL and Machine Learning.
 
 ---
 
-# ✅ Pydantic Validation
+# ✅ Custom Pydantic Validation
 
-After generating JSON, the output is validated using a Pydantic schema.
+The generated JSON is validated before it is used.
 
-```python
-class Person(BaseModel):
-    name: str
-    age: int
-    email: EmailStr
-    skills: List[str]
-```
+The project includes custom validation rules for:
 
-Benefits
+### Name Validation
 
-- Ensures correct data types
-- Validates email format
-- Prevents malformed JSON
-- Makes AI output reliable
+- Minimum length
+- Maximum length
+- Removes extra spaces
+- Allows only alphabets and spaces
+- Automatically converts to Title Case
+
+### Age Validation
+
+- Age must be between **1** and **100**
+
+### Email Validation
+
+- Valid email format
+- Converts email to lowercase
+- Blocks temporary/fake domains
+
+Example blocked domains:
+
+- spam.com
+- fake.com
+- tempmail.com
+
+### Skills Validation
+
+- Removes extra spaces
+- Rejects very short skill names
+- Converts every skill to Title Case
 
 ---
 
-# 🧠 Intent Detection
+# 🚨 Validation Error Example
 
-Instead of requiring commands like:
+Example Input
 
+```text
+My name is Harsh Pariya.
+I am 250 years old.
+My email is harsh@spam.com.
+I know AI.
 ```
+
+Output
+
+```text
+Validation Failed!
+
+Field : age
+Error : Input should be less than or equal to 120
+
+Field : email
+Error : Temporary or blocked email domains are not allowed.
+```
+
+---
+
+# 🎯 Intent Detection
+
+Instead of requiring special commands like:
+
+```text
 extract:
 ```
 
-the chatbot automatically detects user intent.
+the chatbot automatically determines the user's intent.
 
-Example
+### Calculator
 
-```
-Calculate 50 + 20
+```text
+Calculate 20 × 30
 ```
 
 ↓
@@ -206,7 +248,9 @@ Calculator Tool
 
 ---
 
-```
+### Time
+
+```text
 What is the current time?
 ```
 
@@ -216,17 +260,21 @@ Time Tool
 
 ---
 
-```
+### Information Extraction
+
+```text
 My name is Harsh...
 ```
 
 ↓
 
-Structured Output
+Structured JSON + Validation
 
 ---
 
-```
+### Normal Conversation
+
+```text
 Hello
 ```
 
@@ -236,105 +284,188 @@ Normal Conversation
 
 ---
 
-# 💬 Example Conversation
+# ▶️ Installation
 
+Clone the repository
+
+```bash
+git clone https://github.com/yourusername/structured-output-function-calling.git
 ```
-You : Calculate 500 multiplied by 25
 
-Detected Intent : calculator
+Move into the project
 
-Assistant : 12500
+```bash
+cd structured-output-function-calling
+```
+
+Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate it
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Create a `.env` file
+
+```env
+GROQ_API_KEY=YOUR_API_KEY
+```
+
+Run the project
+
+```bash
+python app.py
 ```
 
 ---
 
+
+# 💬 Example Conversation
+
+### Calculator
+
+```text
+You : Calculate 250 multiplied by 40
+
+Detected Intent : calculator
+
+Assistant : 10000
 ```
+
+---
+
+### Time
+
+```text
 You : What is the current time?
 
 Detected Intent : time
 
-Assistant : 02:15 PM
+Assistant : 02:20 PM
 ```
 
 ---
 
-```
+### Structured Output
+
+```text
 You :
+
 My name is Harsh Pariya.
 I am 20 years old.
 My email is harsh@gmail.com.
+I know Python, Java, SQL and Machine Learning.
+```
 
+Output
+
+```text
 Detected Intent : extract
 
 Generated JSON
 
-{
-   ...
-}
-
 Validation Successful!
+
+Parsed Object
+
+Name   : Harsh Pariya
+Age    : 20
+Email  : harsh@gmail.com
+Skills : Python, Java, SQL, Machine Learning
 ```
 
 ---
 
-```
-You : Hello
+### Chat
+
+```text
+You : Who are you?
 
 Detected Intent : chat
 
 Assistant :
-Hello! How can I help you today?
+
+I am an AI Assistant built using Python and the Groq API.
 ```
 
 ---
 
 # 📸 Screenshots
 
-Create an `examples/` folder and add screenshots.
-
-```
-examples/
-│
-├── calculator.png
-├── current_time.png
-├── structured_output.png
-└── chat.png
-```
-
-Then display them like this:
-
-```markdown
 ## Calculator
 
 ![Calculator](examples/calculator.png)
 
+---
+
 ## Current Time
 
-![Time](examples/current_time.png)
+![Current Time](examples/current_time.png)
+
+---
 
 ## Structured Output
 
 ![Structured Output](examples/structured_output.png)
 
+---
+
+## Validation Error
+
+![Validation Error](examples/validation_error.png)
+
+---
+
 ## Chat
 
 ![Chat](examples/chat.png)
-```
 
 ---
 
-# 📌 Task Requirements Covered
+# 📌 Assignment Requirements Covered
 
-- ✔ Native Function Calling
-- ✔ Two Python Tools
-- ✔ JSON Tool Schemas
-- ✔ Structured JSON Output
-- ✔ Pydantic Validation
-- ✔ Interactive Chatbot
-- ✔ Intent Detection
-- ✔ Example Outputs
+- ✅ Native Function Calling
+- ✅ Two Callable Python Tools
+- ✅ Tool JSON Schemas
+- ✅ Structured JSON Output
+- ✅ Pydantic Schema Validation
+- ✅ Custom Field Validators
+- ✅ Interactive Chatbot
+- ✅ Automatic Intent Detection
+- ✅ Validation Error Reporting
 
 ---
 
+# 🚀 Future Improvements
 
+- Weather API Integration
+- Currency Converter Tool
+- PDF Information Extraction
+- Retrieval-Augmented Generation (RAG)
+- Streamlit Web Interface
+- Voice Assistant
+- Docker Support
+- Unit Testing
+- Logging & Monitoring
+
+---
 
